@@ -1,14 +1,14 @@
 podTemplate(label: 'docker-build', 
   containers: [
     containerTemplate(
-      name: 'git',
-      image: 'alpine/git',
+      name: 'docker',
+      image: 'docker',
       command: 'cat',
       ttyEnabled: true
     ),
     containerTemplate(
-      name: 'docker',
-      image: 'docker',
+      name: 'argo',
+      image: 'argoproj/argo-cd-ci-builder:latest',
       command: 'cat',
       ttyEnabled: true
     ),
@@ -22,7 +22,7 @@ podTemplate(label: 'docker-build',
         def appImage
         
         stage('Checkout'){
-            container('git'){
+            container('argo'){
                 checkout scm
             }
         }
@@ -52,6 +52,26 @@ podTemplate(label: 'docker-build',
                     docker.withRegistry('https://registry.hub.docker.com', dockerHubCred){
                         appImage.push("${env.BUILD_NUMBER}")
                         appImage.push("latest")
+                    }
+                }
+            }
+        }
+
+        def gitHubCred = "my_github_cred"
+        stage('Deploy'){
+            container('argo'){
+                withCredentials([usernamePassword(credentialsId: gitHubCred, usernameVariable: 'USERNAME', passwordVariable: 'PASSWD')]) {
+                    script {
+                        env.ENCODED_PASSWD=URLEncoder.encode(PASSWD, "UTF-8")
+                        env.GIT_URL='cure4itches/docker-hello-world-deployment'
+                    }
+                    sh 'git clone https://${USERNAME}:${ENCODED_PASSWD}@${GIT_URL}'
+                    dir("docker-hello-world-deployment"){
+                        sh 'cd env/dev'
+                        sh 'kustomize edit set image arm7tdmi/node-hello-world:${BUILD_NUMBER}'
+                        sh 'git commit -a -m "updated the image tag'
+                        sh 'cd -'
+                        sh 'git push'
                     }
                 }
             }
