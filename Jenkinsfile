@@ -71,7 +71,13 @@ podTemplate(label: 'docker-build',
                 sh 'git config --global user.email "cure4itches@gmail.com"'
                 sh 'git checkout main'
                 sh 'cd env/dev && kustomize edit set image arm7tdmi/node-hello-world:${BUILD_NUMBER}'
-                sh 'git commit -a -m "updated the image tag" && git push'
+                sh 'git commit -a -m "updated the image tag"'
+                
+                withCredentials([usernamePassword(credentialsId: 'my_github_cred',
+                    usernameVariable: 'username',
+                    passwordVariable: 'password')]){
+                        sh("git push https://$username:$password@github.com/cure4itches/docker-hello-world-deployment.git")
+                }
             }
         }
     } 
