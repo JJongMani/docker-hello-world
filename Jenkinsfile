@@ -21,6 +21,42 @@ podTemplate(label: 'docker-build',
         def dockerHubCred = "dockerhub_cred"
         def appImage
         
+        stage('Checkout'){
+            container('argo'){
+                checkout scm
+            }
+        }
+        
+        stage('Build'){
+            container('docker'){
+                script {
+                    appImage = docker.build("arm7tdmi/node-hello-world")
+                }
+            }
+        }
+        
+        stage('Test'){
+            container('docker'){
+                script {
+                    appImage.inside {
+                        sh 'npm install'
+                        sh 'npm test'
+                    }
+                }
+            }
+        }
+
+        stage('Push'){
+            container('docker'){
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', dockerHubCred){
+                        appImage.push("${env.BUILD_NUMBER}")
+                        appImage.push("latest")
+                    }
+                }
+            }
+        }
+
         stage('Deploy'){
             container('argo'){
                 checkout([$class: 'GitSCM',
