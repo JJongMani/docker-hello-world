@@ -68,12 +68,8 @@ podTemplate(label: 'docker-build', podRetention: onFailure(),
                         ]]
                     ])
                 sh 'git config --global user.email "cure4itches@gmail.com"'
-                sh 'cd env/dev'
-                sh 'pwd && ls -la'
-                sh 'kustomize edit set image arm7tdmi/node-hello-world:${BUILD_NUMBER}'
-                sh 'git commit -a -m "updated the image tag'
-                sh 'cd -'
-                sh 'git push'
+                sh 'cd env/dev && kustomize edit set image arm7tdmi/node-hello-world:${BUILD_NUMBER}'
+                sh 'git commit -a -m "updated the image tag && git push'
             }
         }
     } 
