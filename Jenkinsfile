@@ -1,4 +1,4 @@
-podTemplate(label: 'docker-build', 
+podTemplate(label: 'docker-build', podRetention: onFailure()
   containers: [
     containerTemplate(
       name: 'docker',
