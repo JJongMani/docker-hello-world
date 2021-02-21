@@ -63,7 +63,7 @@ podTemplate(label: 'docker-build',
                         branches: [[name: '*/main' ]],
                         extensions: scm.extensions,
                         userRemoteConfigs: [[
-                            url: 'github.com/cure4itches/docker-hello-world-deployment.git',
+                            url: 'https://github.com/cure4itches/docker-hello-world-deployment.git',
                             credentialsId: 'my_github_cred'
                         ]]
                     ])
