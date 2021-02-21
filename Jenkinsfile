@@ -57,25 +57,24 @@ podTemplate(label: 'docker-build',
             }
         }
 
-        def gitHubCred = "my_github_cred"
         stage('Deploy'){
             container('argo'){
-                withCredentials([usernamePassword(credentialsId: gitHubCred, usernameVariable: 'USERNAME', passwordVariable: 'PASSWD')]) {
-                    script {
-                        env.GIT_URL='github.com/cure4itches/docker-hello-world-deployment.git'
-                    }
-                    sh 'git clone https://${USERNAME}:${PASSWD}@${GIT_URL}'
-                    dir("docker-hello-world-deployment"){
-                        sh 'pwd && ls -la'
-                        sh 'git config --global user.email "cure4itches@gmail.com"'
-                        sh 'cd env/dev'
-                        sh 'kustomize edit set image arm7tdmi/node-hello-world:${BUILD_NUMBER}'
-                        sh 'git commit -a -m "updated the image tag'
-                        sh 'cd -'
-                        sh 'git push'
-                    }
-                }
-            }
+                    checkout([$class: 'GitSCM',
+                        branches: [[name: '*/main' ]],
+                        extensions: scm.extensions,
+                        userRemoteConfigs: [[
+                            url: 'github.com/cure4itches/docker-hello-world-deployment.git',
+                            credentialsId: 'my_github_cred'
+                        ]]
+                    ])
+                sh 'pwd && ls -la'
+                sh 'git config --global user.email "cure4itches@gmail.com"'
+                sh 'cd env/dev'
+                sh 'kustomize edit set image arm7tdmi/node-hello-world:${BUILD_NUMBER}'
+                sh 'git commit -a -m "updated the image tag'
+                sh 'cd -'
+                sh 'git push'
+                    
         }
     }
     
