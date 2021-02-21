@@ -59,7 +59,7 @@ podTemplate(label: 'docker-build',
 
         stage('Deploy'){
             container('argo'){
-                withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-ssh-private')]) {
+                withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-ssh-private', keyFileVariable: 'keyfile')]) {
                     checkout([$class: 'GitSCM',
                         branches: [[name: '*/main' ]],
                         extensions: scm.extensions,
