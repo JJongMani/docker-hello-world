@@ -1,4 +1,4 @@
-podTemplate(label: 'docker-build', podRetention: onFailure(),
+podTemplate(label: 'docker-build',
   containers: [
     containerTemplate(
       name: 'docker',
@@ -71,7 +71,7 @@ podTemplate(label: 'docker-build', podRetention: onFailure(),
                 sh 'git config --global user.email "cure4itches@gmail.com"'
                 sh 'git checkout main'
                 sh 'cd env/dev && kustomize edit set image arm7tdmi/node-hello-world:${BUILD_NUMBER}'
-                sh 'git commit -a -m "updated the image tag && git push"'
+                sh 'git commit -a -m "updated the image tag" && git push'
             }
         }
     } 
