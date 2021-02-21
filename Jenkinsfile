@@ -35,7 +35,7 @@ podTemplate(label: 'docker-build',
                     sh 'git config --global user.email "cure4itches@gmail.com"'
                     sh 'git checkout main'
                     sh 'cd env/dev && kustomize edit set image arm7tdmi/node-hello-world:${BUILD_NUMBER}'
-                    sh 'echo ${SSH_KEY_FILE}'
+                    sh 'ls -la ~/.ssh'
                     sh 'git commit -a -m "updated the image tag" && git push'
                 }
             }
