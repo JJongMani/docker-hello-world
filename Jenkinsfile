@@ -63,7 +63,7 @@ podTemplate(label: 'docker-build',
                 withCredentials([usernamePassword(credentialsId: gitHubCred, usernameVariable: 'USERNAME', passwordVariable: 'PASSWD')]) {
                     script {
                         env.ENCODED_PASSWD=URLEncoder.encode(PASSWD, "UTF-8")
-                        env.GIT_URL='cure4itches/docker-hello-world-deployment'
+                        env.GIT_URL='github.com/cure4itches/docker-hello-world-deployment'
                     }
                     sh 'git clone https://${USERNAME}:${ENCODED_PASSWD}@${GIT_URL}'
                     dir("docker-hello-world-deployment"){
