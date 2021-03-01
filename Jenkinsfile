@@ -1,4 +1,4 @@
-podTemplate(label: 'docker-build',
+podTemplate(label: 'docker-build', idleMinutes: 30,
   containers: [
     containerTemplate(
       name: 'docker',
