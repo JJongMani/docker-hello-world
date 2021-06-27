@@ -30,7 +30,7 @@ podTemplate(label: 'docker-build',
         stage('Build'){
             container('docker'){
                 script {
-                    appImage = docker.build("JJongMani/docker-hello-world")
+                    appImage = docker.build("whdals09/docker-hello-world")
                 }
             }
         }
